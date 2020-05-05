@@ -1,0 +1,2 @@
+<?= $this->Html->link(__('Nouvelle facture'), ['action' => 'add'], ['class' => 'btn btn-primary']) ?> | 
+<?= $this->Html->link(__('Importer fichier'), ['action' => 'formimport'], ['class' => 'btn btn-primary']) ?>
