@@ -30,9 +30,6 @@
                     echo $this->Form->control('numero_facture',[ 'type' => 'number','required' => true,'id' => 'numero_facture','class' =>'form-control']);
                     echo $this->Form->control('categorie_id', [
                         'options' => $categories,
-                        'templates' => [
-                            'class' => 'bonjour',
-                        ],
                         'class' => 'form-control'
                     ]);
                     echo $this->Form->control('montant_ttc',['label' => __('Montant TTC'),'class' => 'form-control']);

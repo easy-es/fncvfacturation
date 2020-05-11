@@ -7,6 +7,7 @@ $url =  $this->Url->build([
 ?>
 <?= $this->Html->script("datatables.js") ?>
 <?= $this->Html->script("datetime.js") ?>
+<?= $this->element('Factures\filter') ?>
 
 <h1>Factures</h1>
 <?= $this->element('Factures\menu') ?>
@@ -84,7 +85,7 @@ $url =  $this->Url->build([
             if( data.reste > 0 ) {
                 //$(row).addClass('bg-danger');
                 //$(row).addClass('text-white');
-            } else if (data.reste === 0 && data.remarque === ''){
+            } else if (data.reste === 0){
                 $(row).addClass('bg-success');
                 $(row).addClass('text-white');
             }

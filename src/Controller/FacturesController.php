@@ -24,8 +24,22 @@ class FacturesController extends AppController
     }
     public function csv() {
         $order = $this->request->getQuery('order');
+        $search = $this->request->getQuery('search');
+        $conditions = [];
+        if(!empty($search)) {
+            $searchValue = htmlspecialchars($search['value']);
+            $conditions = ['conditions' => 
+            ['OR' => [
+                    ['adressea LIKE ' => '%'.$searchValue.'%'],
+                    ['objet LIKE ' => '%'.$searchValue.'%'],
+                ]
+            ]
+        ];
+        }
+        
         $columns = ['numero_facture','categorie_id','montant_ttc','adressea','objet','date_facture','relance','reste','montant_ttc_encaissement','date_encaissement','mode_paiement','paye','avoir','remarque'];
-        $factures = $this->Factures->find('all')
+        $factures = $this->Factures->find('all',$conditions
+        )
         ->contain(
             ['Categories' => [
                 'fields' => ['libelle']
@@ -60,7 +74,7 @@ class FacturesController extends AppController
         $export = [
                 'draw' => $this->request->getQuery('draw'),
                 'recordsTotal' => $this->Factures->find('all')->count(),
-                'recordsFiltered' => $this->Factures->find('all')->count(),
+                'recordsFiltered' => count($listeFactures),
                 'data' => $listeFactures
 
             ];
@@ -115,7 +129,6 @@ class FacturesController extends AppController
                             $update[] = $ligne;
                         }
                     }
-        
                     fclose($handle);
                     $factures = $this->Factures->newEntities($lignes);
                     $result = $this->Factures->saveMany($factures);
@@ -135,9 +148,11 @@ class FacturesController extends AppController
     }
     private function formatInt($str) {
        if(!empty($str)){
-            $replace = str_replace('€','',$str);
-            $replace = str_replace(',','.',$replace);
-            return is_numeric(trim($replace)) ? trim($replace) : 0 ;
+           $match = '';
+           $str = str_replace(' ','',$str);
+            preg_match( '/[-+]?([0-9]*\,[0-9]+|[0-9]+)/',$str,$match );
+            $replace = isset($match[0]) ? $match[0] : 0 ;
+            return $replace === 0 ? $replace :  str_replace(',','.',$replace);
        }
        return 0;
     }
@@ -154,7 +169,8 @@ class FacturesController extends AppController
         ];
         $factures = $this->paginate($this->Factures);
 
-        $this->set(compact('factures'));
+        $categories = $this->Factures->Categories->find('list', ['limit' => 200]);
+        $this->set(compact('factures', 'categories'));
     }
 
     /**

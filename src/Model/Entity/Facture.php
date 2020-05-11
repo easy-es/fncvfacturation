@@ -10,4 +10,5 @@ class Facture extends Entity
         '*' => true,
         'id' => true,
     ];
+
 }
