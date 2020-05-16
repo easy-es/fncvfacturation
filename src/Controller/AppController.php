@@ -17,6 +17,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Event\EventInterface as Event;
 
 /**
  * Application Controller
@@ -48,6 +49,22 @@ class AppController extends Controller
          * Enable the following component for recommended CakePHP form protection settings.
          * see https://book.cakephp.org/4/en/controllers/components/form-protection.html
          */
-        //$this->loadComponent('FormProtection');
+        $this->loadComponent('FormProtection');
+        $this->loadComponent('Auth', [
+            'loginRedirect' => [
+                'controller' => 'Uers',
+                'action' => 'login'
+            ],
+            'logoutRedirect' => [
+                'controller' => 'Users',
+                'action' => 'logout'
+            ],
+            'storage' => 'Session'
+        ]);
+    }
+
+    public function beforeRender(Event $event)
+    {
+       $this->set('username',$this->Auth->user('username'));
     }
 }

@@ -54,9 +54,6 @@ $cakeDescription = 'FNCV Facturation';
 </head>
 <body>
     <header>
-        <div class="container text-center">
-           <h1> FNCV FACTURATION
-        </div>
     </header>
     <main class="main">
         <div class="container">

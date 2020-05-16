@@ -19,12 +19,15 @@ class FacturesController extends AppController
 
     public function initialize(): void
     {
+        parent::initialize();
         $this->loadModel('Categories');
         $this->listCategories = $this->Categories->find('list')->toArray();
     }
     public function csv() {
         $order = $this->request->getQuery('order');
         $search = $this->request->getQuery('search');
+        $categorie = $this->request->getQuery('categorie');
+
         $conditions = [];
         if(!empty($search)) {
             $searchValue = htmlspecialchars($search['value']);
@@ -36,6 +39,8 @@ class FacturesController extends AppController
             ]
         ];
         }
+        if( !empty($categorie))
+            $conditions['conditions'] = array_merge(['categorie_id'=> $categorie],$conditions['conditions']);
         
         $columns = ['numero_facture','categorie_id','montant_ttc','adressea','objet','date_facture','relance','reste','montant_ttc_encaissement','date_encaissement','mode_paiement','paye','avoir','remarque'];
         $factures = $this->Factures->find('all',$conditions
@@ -45,8 +50,9 @@ class FacturesController extends AppController
                 'fields' => ['libelle']
                 ]
             ])
-            ->order( [ $columns[$order[0]['column']] => $order[0]['dir']])
-            ->offset($this->request->getQuery('start'))
+            ->order( [ $columns[$order[0]['column']] => $order[0]['dir']]);
+            $recordsFiltered = $factures->count();
+            $factures->offset($this->request->getQuery('start'))
             ->limit($this->request->getQuery('length'));
         $data = [];
         $listeFactures = [];
@@ -70,11 +76,10 @@ class FacturesController extends AppController
                 'action' =>'<a href="'. Router::url(['controller' => 'Factures', 'action' => 'edit']).'/'.$f->id.'"/>Modifier<a>',
             ];
         }
-        $count =  count($listeFactures);
         $export = [
                 'draw' => $this->request->getQuery('draw'),
                 'recordsTotal' => $this->Factures->find('all')->count(),
-                'recordsFiltered' => count($listeFactures),
+                'recordsFiltered' => $recordsFiltered,
                 'data' => $listeFactures
 
             ];

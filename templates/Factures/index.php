@@ -7,7 +7,7 @@ $url =  $this->Url->build([
 ?>
 <?= $this->Html->script("datatables.js") ?>
 <?= $this->Html->script("datetime.js") ?>
-<?= $this->element('Factures\filter') ?>
+<?= $this->element('Factures\filter',['url'=> $url]) ?>
 
 <h1>Factures</h1>
 <?= $this->element('Factures\menu') ?>
@@ -39,7 +39,13 @@ $url =  $this->Url->build([
         $('#table').DataTable( {
             "processing": true,
             "serverSide": true,
-            "ajax": '<?= $url ?>',
+            "ajax": {
+                "url":'<?= $url ?>',
+                "data": {
+                    "categorie": function(){ return $('#categorie-id').val() }
+                }
+
+            },
             "columns": [
                 { "data": "numero_facture"},
                 { "data": "categorie_id" },
@@ -85,16 +91,14 @@ $url =  $this->Url->build([
             if( data.reste > 0 ) {
                 //$(row).addClass('bg-danger');
                 //$(row).addClass('text-white');
-            } else if (data.reste === 0){
+            } else if (data.reste === 0 || (data.remarque.includes('AVOIR')) ){
                 $(row).addClass('bg-success');
                 $(row).addClass('text-white');
-            }
+            }            
+        }
+        });
+        $('#categorie-id').select(function(){
             
-            
-        },
-        "initComplete": function(settings, json) {
-            
-            }
-        } );
+        });
     });
   </script>

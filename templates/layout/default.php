@@ -40,13 +40,34 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->Html->script("JQuery-Cookie/1.4/jquery.cookie.js") ?>
 </head>
 <body>
-    <nav class="top-nav">
-        <div class="top-nav-title">
-            <a href="/"><span>FNCV Facturation</span></a>
-        </div>
-    </nav>
     <main class="main">
         <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <?= $this->Html->link(__('FNCV FACTURATION'), ['controller' => 'Pages','action' => 'index'], ['class' => 'navbar-brand']) ?>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                <li class="nav-item">
+                    <?= $this->Html->link(__('Factures'), ['controller'=>'Factures','action' => 'index'], ['class' => 'nav-link']) ?>
+                </li>
+                <li class="nav-item">
+                    <?= $this->Html->link(__('Categories'), ['controller'=>'Categories','action' => 'index'], ['class' => 'nav-link']) ?>
+                </li>
+                <li class="nav-item">
+                    <?= $this->Html->link(__('Importer fichier Facture'), ['controller'=>'Factures','action' => 'formimport'], ['class' => 'nav-link']) ?>
+                </li>
+                <li class="nav-item">
+                <?php if ($username) :?>
+                    <?= $this->Html->link(__('Deconnexion'), ['controller'=> 'Users','action' => 'logout'], ['class' => 'btn btn-primary']) ?> | 
+                <?php else : ?>
+                    <?= $this->Html->link(__('Se connecter'), ['controller'=> 'Users','action' => 'logout'], ['class' => 'btn btn-primary']) ?>
+                    <?php endif ?>
+                </li>
+                </ul>
+            </div>
+            </nav>
             <?= $this->Flash->render() ?>
             <?= $this->fetch('content') ?>
         </div>
