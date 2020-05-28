@@ -23,6 +23,7 @@ class FacturesController extends AppController
         $this->loadModel('Categories');
         $this->listCategories = $this->Categories->find('list')->toArray();
     }
+
     public function csv() {
         $order = $this->request->getQuery('order');
         $search = $this->request->getQuery('search');

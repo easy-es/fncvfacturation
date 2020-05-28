@@ -32,6 +32,7 @@ CREATE TABLE factures (
     remarque TEXT,
     paye TINYINT(1),
     avoir INT,
+    role VARCHAR(20),
     created DATETIME,
     modified DATETIME,
     FOREIGN KEY categorie_key (categorie_id) REFERENCES categories(id)

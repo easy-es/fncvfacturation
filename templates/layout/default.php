@@ -49,7 +49,9 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                <li class="nav-item">
+                
+                <?php if ($username) :?>
+                    <li class="nav-item">
                     <?= $this->Html->link(__('Factures'), ['controller'=>'Factures','action' => 'index'], ['class' => 'nav-link']) ?>
                 </li>
                 <li class="nav-item">
@@ -59,7 +61,6 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                     <?= $this->Html->link(__('Importer fichier Facture'), ['controller'=>'Factures','action' => 'formimport'], ['class' => 'nav-link']) ?>
                 </li>
                 <li class="nav-item">
-                <?php if ($username) :?>
                     <?= $this->Html->link(__('Deconnexion'), ['controller'=> 'Users','action' => 'logout'], ['class' => 'btn btn-primary']) ?> | 
                 <?php else : ?>
                     <?= $this->Html->link(__('Se connecter'), ['controller'=> 'Users','action' => 'logout'], ['class' => 'btn btn-primary']) ?>
