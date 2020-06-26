@@ -32,8 +32,12 @@ class FacturesController extends AppController
         $conditions = [];
         if(!empty($search)) {
             $searchValue = htmlspecialchars($search['value']);
+            //var_dump($searchValue);
+            //die('ici');
             $conditions = ['conditions' => 
-            ['OR' => [
+            ['OR' => 
+                [
+                    ["numero_facture LIKE '%$searchValue%'"],
                     ['adressea LIKE ' => '%'.$searchValue.'%'],
                     ['objet LIKE ' => '%'.$searchValue.'%'],
                 ]
@@ -100,18 +104,21 @@ class FacturesController extends AppController
             if($file->moveTo($uploadedFile)){
                 $this->log('Le fichier à été déplacé.');
             }
-                $listeFactures = $this->Factures->find('list', [
-                    'keyField' => 'id',
-                    'valueField' => 'numero_facture']
-                )->toArray();
-                $row = 1;
-                $lignes = [];
-                $update = [];
-                if (($handle = fopen($uploadedFile, "r")) !== FALSE) {
-                    while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
-                        $categorieId = array_search( trim($data[1]),$this->listCategories);
-
-                        $num = count($data);
+            $listeFactures = $this->Factures->find('list', [
+                'keyField' => 'id',
+                'valueField' => 'numero_facture']
+            )->toArray();
+            $row = 1;
+            $lignes = [];
+            $update = [];
+            $errors = [];
+            if (($handle = fopen($uploadedFile, "r")) !== FALSE) {
+                while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) {
+                    $categorieId = array_search( trim($data[1]),$this->listCategories);
+                    // si la categorie n'a pas ete trouvé au prealable , pas d'enregistrement
+                    if(empty($categorieId) ) {
+                        $errors[] = ['id' => $data[0]];
+                     }
                         $row++;
                         $ligne = [
                             'numero_facture' => $data[0],
@@ -128,14 +135,17 @@ class FacturesController extends AppController
                             'avoir' => $this->getAvoirFromTxt($data[11]),
                             'remarque' => utf8_encode($data[11])
                         ];
+                        // creation
                         if(!in_array($ligne['numero_facture'],$listeFactures))
                             $lignes[] = $ligne;
-                        else {
+                        else { // mise a jour
                             $ligne['id'] = array_search($ligne['numero_facture'],$listeFactures);
                             $update[] = $ligne;
                         }
-                    }
-                    fclose($handle);
+                    } 
+                }
+                fclose($handle);
+                if(empty($errors)){
                     $factures = $this->Factures->newEntities($lignes);
                     $result = $this->Factures->saveMany($factures);
                     $entitiesUpdate = $this->Factures->newEntities($update);
@@ -145,11 +155,11 @@ class FacturesController extends AppController
                     $this->set('nombre',count($lignes));
                     $this->set('update',count($entitiesUpdate));
                     $this->set(\compact('factures','entitiesUpdate'));
+                } else {
+                    $this->set('error',$errors);
+                    $this->Flash->error(__("La catégorie n'a pas été trouvé. Vérifiez votre fichier csv"));
                 }
-            }  else {
-
-                return $this->redirect(['action' => 'index']);
-            }
+        }  
         
     }
     private function formatInt($str) {
@@ -219,6 +229,7 @@ class FacturesController extends AppController
         $facture->numero_facture = $this->autoGenerateFactureNumber();
         $categories = $this->Factures->Categories->find('list', ['limit' => 200]);
         $this->set(compact('facture', 'categories'));
+        $this->render('facture');
     }
 
     /**
@@ -244,6 +255,7 @@ class FacturesController extends AppController
         }
         $categories = $this->Factures->Categories->find('list', ['limit' => 200]);
         $this->set(compact('facture', 'categories'));
+        $this->render('facture');
     }
 
     /**

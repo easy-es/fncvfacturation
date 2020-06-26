@@ -1,5 +1,8 @@
 <?= $this->element('Factures\menu') ?>
 <div>
+    <?php if (isset($error)) {
+     
+    } else { ?>
 <?=  $nombre. ' lignes enregistrées.' ?> <br />
 <?=  $update. ' lignes mise à jour' ?>
 </div>
@@ -41,3 +44,4 @@
         </tbody>
     </table>
 </div>
+            <?php } ?>

@@ -6,6 +6,7 @@
 /tmp/*
 /vendor/*
 /tests/*
+/resources/*
 # OS generated files #
 ######################
 .DS_Store
