@@ -6,17 +6,7 @@ A light invoice and estimation bill manager in CakePhP 4 and Boostrap 4
 The framework source code can be found here: [cakephp/cakephp](https://github.com/cakephp/cakephp).
 
 ## Installation
-1. Download or use the command git clone  https://github.com/easy-es/fncvfacturation.git .
-2. Download [Composer](https://getcomposer.org/doc/00-intro.md) or update `composer self-update`.
-3. Run `php composer.phar install` or if composer is installed globally, run `composer install`.
-
-If Composer is installed globally, run
-
-```bash
-composer create-project --prefer-dist cakephp/app
-```
-
-In case you want to use a custom app dir name (e.g. `/myapp/`):
+ Download or use the command git clone  https://github.com/easy-es/fncvfacturation.git .
 
 
 ## Run SQL script
@@ -34,3 +24,11 @@ Basic systeme loggin.
 Datatable.js plugin.
 Auto generation of an invoice id based on the last inserted id in the table.
 Verification of the auto generated invoiced id. 
+All collumns are sortable.
+Filter by categories.
+Pagination of the number of rows shown.
+
+## Import a csv file 
+If the CSV file does not respect the file structur, the process is stop.
+If the data of the file mismatch or are incorrect , none of the data are saved
+If the data already exist, the data is update.
